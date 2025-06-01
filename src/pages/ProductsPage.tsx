@@ -15,7 +15,7 @@ function ProductsPage() {
     const [view, setView] = useState<'grid' | 'list'>('grid');
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-    const [showCategories, setShowCategories] = useState(false);
+    const [showCategories, setShowCategories] = useState(true);
 
     const itemsPerPage = 8;
 
@@ -130,10 +130,10 @@ function ProductsPage() {
                     </div>
 
                     <div className="flex gap-2 items-center">
-                        <button onClick={() => setView('grid')} className={view === 'grid' ? 'text-indigo-600' : 'text-gray-500'}>
+                        <button onClick={() => setView('grid')} className={view === 'grid' ? 'text-red-800' : 'text-gray-500'}>
                             <FaTh size={20} />
                         </button>
-                        <button onClick={() => setView('list')} className={view === 'list' ? 'text-indigo-600' : 'text-gray-500'}>
+                        <button onClick={() => setView('list')} className={view === 'list' ? 'text-red-800' : 'text-gray-500'}>
                             <FaList size={20} />
                         </button>
                     </div>
@@ -148,24 +148,24 @@ function ProductsPage() {
                             <img
                                 src={product.image}
                                 alt={product.title}
-                                className="h-48 w-full object-contain mb-4"
+                                className="h-24 w-full object-contain mb-4"
                             />
-                            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 line-clamp-2">
+                            <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-100 line-clamp-2">
                                 {product.title}
                             </h3>
-                            <p className="text-indigo-600 dark:text-indigo-400 font-bold text-md mt-2">
+                            <p className="text-red-800 dark:text-indigo-400 font-bold text-md mt-2">
                                 ${product.price.toFixed(2)}
                             </p>
                             <div className="flex flex-col gap-2 mt-4">
                                 <button
                                     onClick={() => addToCart(product)}
-                                    className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition duration-200"
+                                    className="bg-gray-100 text-black/65 py-1 px-4 rounded hover:bg-gray-200 transition duration-200"
                                 >
                                     Add to Cart
                                 </button>
                                 <Link
                                     to={`/product/${product.id}`}
-                                    className="text-center bg-gray-200 text-gray-800 py-2 px-4 rounded hover:bg-gray-300 transition duration-200"
+                                    className="text-center bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-800 transition duration-200"
                                 >
                                     View Product
                                 </Link>
@@ -175,13 +175,13 @@ function ProductsPage() {
                 </div>
 
                 {/* Pagination */}
-                <div className="mt-8 flex justify-center gap-2">
+                <div className="mt-8 flex justify-center gap-2 mb-24">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                         <button
                             key={page}
                             onClick={() => setCurrentPage(page)}
                             className={`px-4 py-2 rounded ${
-                                currentPage === page ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'
+                                currentPage === page ? 'bg-gray-100 text-black' : 'text-gray-700'
                             }`}
                         >
                             {page}

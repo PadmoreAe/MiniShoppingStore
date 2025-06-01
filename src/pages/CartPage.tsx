@@ -14,9 +14,9 @@ function Cart() {
 
     if (cart.length === 0) {
         return (
-            <div className="p-6 text-center text-gray-500">
-                <p>Your cart is empty.</p>
-                <Link to="/products" className="text-blue-600 hover:underline mt-2 block">
+            <div className="p-6 text-center text-gray-500 py-52">
+                <p>Your cart is empty</p>
+                <Link to="/products" className="hover:text-indigo-300 mt-2 px-5 rounded-md text-indigo-500">
                     Go shopping
                 </Link>
             </div>
