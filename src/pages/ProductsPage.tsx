@@ -1,25 +1,26 @@
-import { useEffect, useState, useContext } from 'react';
-import { CartContext } from '../contexts/CartContext.tsx';
+import type { Product } from '../types';
+import { useEffect, useState } from 'react';
 import { FaTh, FaList } from 'react-icons/fa';
-import { FiMenu } from "react-icons/fi";
+import { FiMenu } from 'react-icons/fi';
 import { FaAngleDown, FaAngleUp } from 'react-icons/fa';
-import SearchBar from "../components/SearchBar.tsx";
+import SearchBar from '../components/SearchBar.tsx';
 import { Link } from 'react-router-dom';
+import { useCart } from '../contexts/CartContext.tsx';
 
 function ProductsPage() {
-    const [allProducts, setAllProducts] = useState([]);
-    const [products, setProducts] = useState([]);
-    const [categories, setCategories] = useState([]);
+    const [allProducts, setAllProducts] = useState<Product[]>([]);
+    const [products, setProducts] = useState<Product[]>([]);
+    const [categories, setCategories] = useState<string[]>([]);
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [sortBy, setSortBy] = useState('');
     const [view, setView] = useState<'grid' | 'list'>('grid');
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [showCategories, setShowCategories] = useState(true);
-
     const itemsPerPage = 8;
 
-    const { addToCart } = useContext(CartContext);
+    // Safely get cart and actions from context, default cart to empty array
+    const { cart = [], addToCart, removeFromCart } = useCart();
 
     useEffect(() => {
         fetch('https://fakestoreapi.com/products/categories')
@@ -36,13 +37,14 @@ function ProductsPage() {
 
         fetch(url)
             .then(res => res.json())
-            .then(data => {
+            .then((data: Product[]) => {
+                const sortedData = [...data];
                 if (sortBy === 'price-asc') {
-                    data.sort((a, b) => a.price - b.price);
+                    sortedData.sort((a, b) => a.price - b.price);
                 } else if (sortBy === 'price-desc') {
-                    data.sort((a, b) => b.price - a.price);
+                    sortedData.sort((a, b) => b.price - a.price);
                 }
-                setAllProducts(data);
+                setAllProducts(sortedData);
                 setCurrentPage(1);
                 setLoading(false);
             });
@@ -66,7 +68,13 @@ function ProductsPage() {
         }
     };
 
+    // Check if a product is already in the cart
+    function isInCart(product: Product) {
+        return cart.some(item => item.id === product.id);
+    }
+
     const totalPages = Math.ceil(allProducts.length / itemsPerPage);
+
     if (loading) return <p className="text-center text-gray-500">Loading...</p>;
 
     return (
@@ -89,7 +97,9 @@ function ProductsPage() {
                                 <button
                                     onClick={() => setSelectedCategory('all')}
                                     className={`w-full text-left px-3 py-2 rounded hover:bg-indigo-100 dark:hover:bg-indigo-900 ${
-                                        selectedCategory === 'all' ? 'bg-indigo-200 dark:bg-indigo-700 text-indigo-800 dark:text-white' : 'text-gray-700 dark:text-gray-300'
+                                        selectedCategory === 'all'
+                                            ? 'bg-indigo-200 dark:bg-indigo-700 text-indigo-800 dark:text-white'
+                                            : 'text-gray-700 dark:text-gray-300'
                                     }`}
                                 >
                                     All Categories
@@ -100,7 +110,9 @@ function ProductsPage() {
                                     <button
                                         onClick={() => setSelectedCategory(cat)}
                                         className={`w-full text-left px-3 py-2 rounded hover:bg-indigo-100 dark:hover:bg-indigo-900 ${
-                                            selectedCategory === cat ? 'bg-indigo-200 dark:bg-indigo-700 text-indigo-800 dark:text-white' : 'text-gray-700 dark:text-gray-300'
+                                            selectedCategory === cat
+                                                ? 'bg-indigo-200 dark:bg-indigo-700 text-indigo-800 dark:text-white'
+                                                : 'text-gray-700 dark:text-gray-300'
                                         }`}
                                     >
                                         {cat.charAt(0).toUpperCase() + cat.slice(1)}
@@ -158,14 +170,20 @@ function ProductsPage() {
                             </p>
                             <div className="flex flex-col gap-2 mt-4">
                                 <button
-                                    onClick={() => addToCart(product)}
-                                    className="bg-gray-100 text-black/65 py-1 px-4 rounded hover:bg-gray-200 transition duration-200"
+                                    onClick={() => {
+                                        if (isInCart(product)) {
+                                            removeFromCart(product.id);
+                                        } else {
+                                            addToCart(product);
+                                        }
+                                    }}
+                                    className="bg-gray-100 text-black/65 py-1 px-4 rounded hover:bg-gray-200 transition duration-200 no-underline"
                                 >
-                                    Add to Cart
+                                    {isInCart(product) ? 'Remove from Cart' : 'Add to Cart'}
                                 </button>
                                 <Link
                                     to={`/product/${product.id}`}
-                                    className="text-center bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-800 transition duration-200"
+                                    className="text-center bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-800 transition duration-200 no-underline"
                                 >
                                     View Product
                                 </Link>

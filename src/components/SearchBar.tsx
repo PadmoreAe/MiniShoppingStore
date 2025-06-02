@@ -1,4 +1,3 @@
-// src/components/SearchBar.tsx
 import { useEffect, useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 

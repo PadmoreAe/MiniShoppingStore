@@ -1,6 +1,5 @@
-// src/contexts/CartContext.tsx
-import { createContext, useContext, useState, ReactNode } from 'react';
-
+import type { ReactNode } from 'react';
+import { createContext, useState, useContext } from "react";
 export type Product = {
     id: number;
     title: string;
@@ -12,7 +11,7 @@ export type Product = {
 type CartContextType = {
     cart: Product[];
     addToCart: (product: Product) => void;
-    removeFromCart: (id: number) => void;
+    removeFromCart: (productId: number) => void;
     updateQuantity: (id: number, quantity: number) => void;
     clearCart: () => void;
 
@@ -36,8 +35,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         });
     };
 
-    const removeFromCart = (id: number) => {
-        setCart(prev => prev.filter(p => p.id !== id));
+    const removeFromCart = (productId: number) => {
+        setCart(prevCart => prevCart.filter(item => item.id !== productId));
     };
 
     const clearCart = () => setCart([]);

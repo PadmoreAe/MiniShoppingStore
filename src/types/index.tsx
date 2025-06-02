@@ -1,3 +1,13 @@
+// Review interface used in detailed product info
+export interface Review {
+    rating: number;
+    comment: string;
+    date: string;
+    reviewerName: string;
+    reviewerEmail: string;
+}
+
+// Full product info used in detail pages or admin panels
 export interface ProductProps {
     id: number;
     title: string;
@@ -25,14 +35,21 @@ export interface ProductProps {
     minimumOrderQuantity?: number;
 }
 
-export interface Review {
-    rating: number;
-    comment: string;
-    date: string;
-    reviewerName: string;
-    reviewerEmail: string;
+// Simplified product structure, e.g., for list views or FakeStoreAPI
+export interface Product {
+    id: number;
+    title: string;
+    price: number;
+    category: string;
+    image: string;
+    description: string;
+    rating?: {
+        rate: number;
+        count: number;
+    };
 }
 
+// Pagination props for reusable pagination component
 export interface PaginationProps {
     currentPage: number;
     totalPages: number;

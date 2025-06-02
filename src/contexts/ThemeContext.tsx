@@ -1,11 +1,15 @@
-import { createContext, useState, useEffect, ReactNode } from 'react';
-import Theme  from '../types';
+import type { ReactNode } from 'react';
+import { createContext, useState, useEffect } from 'react';
+
+// Define Theme type directly
+type Theme = 'light' | 'dark';
 
 type ThemeContextType = {
     theme: Theme;
     toggleTheme: () => void;
 };
 
+// Default context
 export const ThemeContext = createContext<ThemeContextType>({
     theme: 'light',
     toggleTheme: () => {},
@@ -13,8 +17,8 @@ export const ThemeContext = createContext<ThemeContextType>({
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const [theme, setTheme] = useState<Theme>(() => {
-        const savedTheme = localStorage.getItem('theme');
-        return (savedTheme as Theme) || 'light';
+        const savedTheme = localStorage.getItem('theme') as Theme;
+        return savedTheme || 'light';
     });
 
     useEffect(() => {
@@ -23,7 +27,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     }, [theme]);
 
     const toggleTheme = () => {
-        setTheme(prev => prev === 'light' ? 'dark' : 'light');
+        setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
     };
 
     return (
